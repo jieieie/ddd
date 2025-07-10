@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Time flies...</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Press Start 2P', monospace;
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .window-frame {
+      border: 4px ridge #c0c0c0;
+      width: 360px;
+      background: #f0f0f0;
+      box-shadow: 4px 4px #808080;
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to bottom, #000080, #000060);
+      color: white;
+      padding: 6px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      border-bottom: 2px ridge #808080;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 6px;
+    }
+
+    .window-buttons .btn {
+      width: 18px;
+      height: 18px;
+      background: #c0c0c0;
+      border: 2px outset #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 10px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .timer-wrapper {
+      position: relative;
+      margin: 20px;
+      height: 120px;
+      border: 2px inset #fff;
+      background: transparent;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: inset -2px -2px 0 #fff, inset 2px 2px 0 #808080;
+    }
+
+    .timer-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: #e0f0ff;
+      transition: width 1s linear;
+      z-index: 0;
+      border-radius: 8px;
+      box-shadow: inset -2px -2px 0 #fff, inset 2px 2px 0 #808080;
+    }
+
+    .timer-text {
+      position: relative;
+      z-index: 1;
+      color: black;
+      font-size: 32px;
+      text-align: center;
+      line-height: 120px;
+      user-select: none;
+      outline: none;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: -10px;
+      padding-bottom: 12px;
+    }
+
+    button {
+      background: #c0c0c0;
+      border: 2px outset #fff;
+      padding: 8px 16px;
+      font-size: 10px;
+      cursor: pointer;
+      font-family: 'Press Start 2P', monospace;
+      box-shadow: inset -3px -3px 0 #fff, inset 3px 3px 0 #808080, 2px 2px 0 #808080;
+      transition: all 0.1s ease-in-out;
+    }
+
+    button:active {
+      box-shadow: inset 3px 3px 0 #808080, inset -3px -3px 0 #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="window-frame">
+    <div class="window-titlebar">
+      <span>♥ Time flies... ♥</span>
+      <div class="window-buttons">
+        <div class="btn">♥</div>
+        <div class="btn">✕</div>
+      </div>
+    </div>
+
+    <div class="timer-wrapper">
+      <div class="timer-text" id="timer" contenteditable="true">15:00</div>
+      <div class="timer-bar" id="timer-bar"></div>
+    </div>
+
+    <div class="button-row">
+      <button onclick="startTimer()">Start</button>
+      <button onclick="pauseTimer()">Pause</button>
+    </div>
+  </div>
+
+  <script>
+    let interval;
+    let totalTime = 0;
+    let currentTime = 0;
+    let paused = false;
+
+    function startTimer() {
+      const timerText = document.getElementById("timer").innerText;
+      const [minutes, seconds] = timerText.split(":").map(num => parseInt(num));
+      totalTime = minutes * 60 + (seconds || 0);
+      currentTime = totalTime;
+      paused = false;
+      clearInterval(interval);
+      interval = setInterval(updateTimer, 1000);
+    }
+
+    function updateTimer() {
+      if (!paused && currentTime > 0) {
+        currentTime--;
+
+        const minutes = String(Math.floor(currentTime / 60)).padStart(2, '0');
+        const seconds = String(currentTime % 60).padStart(2, '0');
+
+        document.getElementById("timer").innerText = `${minutes}:${seconds}`;
+
+        const widthPercent = (currentTime / totalTime) * 100;
+        document.getElementById("timer-bar").style.width = `${widthPercent}%`;
+      }
+
+      if (currentTime <= 0) {
+        clearInterval(interval);
+      }
+    }
+
+    function pauseTimer() {
+      paused = !paused;
+    }
+  </script>
+</body>
+</html>
